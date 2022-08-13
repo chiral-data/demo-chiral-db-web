@@ -160,7 +160,7 @@ const DemoSub: React.FC = () => {
                     {results.length > 0 ?
                         (<Row xs={1} md={2} lg={4}>
                             {results.map((s) => {
-                                return (<Col key={s[0]}><Molecule smiles={chembl_10k[s[0]]} size={200} text={s[0] + ' ' + (s[1][0][0] % atom_colors.length)} highlights={Object.fromEntries(create_highlights(s[1][0]))}/></Col>)
+                                return (<Col key={s[0]}><Molecule smiles={chembl_10k[s[0]]} size={200} text={s[0]} highlights={Object.fromEntries(create_highlights(s[1][0]))}/></Col>)
                             })}
                         </Row>) :
                         (<p>{loading ? 'Searching ...' : 'No result'}</p>)
