@@ -47,6 +47,7 @@ const DemoSim: React.FC = () => {
                     <p>Search {smiles} with cutoff {cutoff / 100.0}</p>
                     <Button onClick={() => {
                         setLoading(true);
+                        setResults([])
                         client.query_similarity('ChEMBL', smiles, cutoff/100.0)
                         .then((reply) => {
                             const results_in_array = reply.getResultsMap().toArray().sort((a: any, b: any) => { return a[1] < b[1] })
@@ -57,11 +58,14 @@ const DemoSim: React.FC = () => {
                 </div>
                 {/* Result  */}
                 <Container>
-                    <Row xs={1} md={2} lg={4}>
-                        {results.map((s) => {
-                            return (<Col><Molecule smiles={chembl_10k[s[0]]} size={200} text={s[0] + ' - ' + String(s[1]).slice(0, 4)} /></Col>)
-                        })}
-                    </Row>
+                    {results.length > 0 ?
+                        (<Row xs={1} md={2} lg={4}>
+                            {results.map((s) => {
+                                return (<Col><Molecule smiles={chembl_10k[s[0]]} size={200} text={s[0] + ' - ' + String(s[1]).slice(0, 4)} /></Col>)
+                            })}
+                        </Row>) : 
+                        (<p>{loading ? 'Searching ...' : 'No result'}</p>)
+                    }
                 </Container>
             </div>
       </div>

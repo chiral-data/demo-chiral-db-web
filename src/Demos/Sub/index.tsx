@@ -137,6 +137,7 @@ const DemoSub: React.FC = () => {
     const [loading, setLoading] = React.useState(false);
     const [smarts, setSmarts] = React.useState('');
     const [results, setResults] = React.useState([])
+    const [resultTotalCount, setResultTotalCount] = React.useState(0)
 
     return (
         <div>
@@ -147,10 +148,13 @@ const DemoSub: React.FC = () => {
                     <p>Search {smarts} </p> 
                     <Button onClick={() => {
                         setLoading(true);
+                        setResults([])
+                        setResultTotalCount(0)
                         client.query_substructure('ChEMBL', smarts) 
                         .then((reply) => {
                             const results_in_array = reply.getResultsMap().toArray()
-                            setResults(results_in_array)
+                            setResultTotalCount(results_in_array.length)
+                            setResults(results_in_array.slice(0, 20))
                             setLoading(false)
                         })
                     }}>Search</Button>
@@ -158,11 +162,14 @@ const DemoSub: React.FC = () => {
                 {/* Result  */}
                 <Container>
                     {results.length > 0 ?
-                        (<Row xs={1} md={2} lg={4}>
-                            {results.map((s) => {
-                                return (<Col key={s[0]}><Molecule smiles={chembl_10k[s[0]]} size={200} text={s[0]} highlights={Object.fromEntries(create_highlights(s[1][0]))}/></Col>)
-                            })}
-                        </Row>) :
+                        (<div>
+                            <p>{results.length} results from total {resultTotalCount}</p>
+                                <Row xs={1} md={2} lg={4}>
+                                    {results.map((s) => {
+                                        return (<Col key={s[0]}><Molecule smiles={chembl_10k[s[0]]} size={200} text={s[0]} highlights={Object.fromEntries(create_highlights(s[1][0]))}/></Col>)
+                                    })}
+                                </Row>
+                        </div>) :
                         (<p>{loading ? 'Searching ...' : 'No result'}</p>)
                     }
                 </Container>
